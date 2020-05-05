@@ -1,0 +1,19 @@
+{
+  "dev": [
+    {
+      "url": "/",
+      "method": "GET",
+      "file": "frontPage.ts"
+    },
+    {
+      "url": "/info",
+      "method": "GET",
+      "file": "infoPage.ts"
+    },
+    {
+      "url": "/favicon.ico",
+      "method": "GET",
+      "file": "icon.ts"
+    }
+  ]
+}
