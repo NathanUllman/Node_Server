@@ -3,7 +3,8 @@
     {
       "url": "/",
       "method": "GET",
-      "file": "frontPage.ts"
+      "html": "index.html",
+      "script": "index.js"
     },
     {
       "url": "/info",
