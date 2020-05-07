@@ -1,18 +1,13 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
-import { readFileSync, readSync } from "fs";
-import { RequestDistributor } from "./3. utils/requestDistributor";
-import { buildPage } from "./3. utils/pageConstructor";
-import { EndPoint } from "./1. models/EndPoint";
-import { IApiResponse } from "./1. models/IApiResponse";
-import { WebsiteEndpoints } from "./WebsiteEndpoints";
+import { EndPointsManager } from "./WebsiteEndpoints";
 
 //server sent events
 
 export class NateServer {
-  endPoints: WebsiteEndpoints;
+  endPointsManager: EndPointsManager;
 
   constructor(srcLocation: string) {
-    this.endPoints = new WebsiteEndpoints(srcLocation); // populate all endpoints
+    this.endPointsManager = new EndPointsManager(srcLocation); // populate all endpoints
   }
 
   logRequest = (req: IncomingMessage) => {
@@ -27,12 +22,19 @@ export class NateServer {
   };
 
   onRequest = (req: IncomingMessage, res: ServerResponse) => {
-    let response: IApiResponse;
+    //this.logRequest(req);
 
-    this.logRequest(req);
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.write("It Works!");
-    res.end();
+    let response = this.endPointsManager.getResponse(
+      req.url === "/" ? "/index" : req.url, // empty url is default to index for some reason :P
+      req.method,
+      req.headers
+    );
+
+    response.execute(res);
+
+    // res.writeHead(200, { "Content-Type": "text/html" });
+    // res.write("It Works!");
+    // res.end();
 
     // this.logRequest(req);
     // get the path for the given request
