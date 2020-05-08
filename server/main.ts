@@ -1,7 +1,5 @@
 import { NateServer } from "./server";
-//https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/Dealing_with_files
 // npx ts-node main.ts
-//const env = "dev";
 const srcFileLocation = "C:/Users/Nathan/Desktop/server/website/src";
 
 const serv: NateServer = new NateServer(srcFileLocation);
@@ -9,6 +7,12 @@ const serv: NateServer = new NateServer(srcFileLocation);
 console.log("Creating Server at localhost:8080");
 serv.createWebite(8080);
 
-// todo: /favicon.ico
-// todo : all js files could be added to endpoints before hand
-// todo: src folder structure should mimic the pages of the website
+/* 
+todo:
+    Image response should handle more than icons
+    allow partial pages (combine different html files into one page)
+    pull 'figure out response type' logic to own class
+    controller functions cannot differentiate from method types (GET, POST, etc)
+
+
+*/

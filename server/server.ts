@@ -1,5 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
-import { EndPointsManager } from "./WebsiteEndpoints";
+import { EndPointsManager } from "./3. utils/WebsiteEndpointsManager";
+import { IEndPointResponse } from "./1. models/EndpointRespones";
 
 //server sent events
 
@@ -24,30 +25,13 @@ export class NateServer {
   onRequest = (req: IncomingMessage, res: ServerResponse) => {
     //this.logRequest(req);
 
-    let response = this.endPointsManager.getResponse(
+    let response: IEndPointResponse = this.endPointsManager.getResponse(
       req.url === "/" ? "/index" : req.url, // empty url is default to index for some reason :P
       req.method,
       req.headers
     );
 
     response.execute(res);
-
-    // res.writeHead(200, { "Content-Type": "text/html" });
-    // res.write("It Works!");
-    // res.end();
-
-    // this.logRequest(req);
-    // get the path for the given request
-    // let endPoint: EndPoint = this.distributor.getEndPoint(req.url, req.method);
-    // if (!endPoint) return;
-    // let apiResponse: IApiResponse = endPoint.createResponse();
-    // if (!apiResponse) return;
-    // let newResourceEndpoints = apiResponse.respond(res);
-    // // add any new endpoint for the page // (todo: probably don't need this)
-    // if (newResourceEndpoints && newResourceEndpoints.length > 0)
-    //   newResourceEndpoints.forEach((elem) =>
-    //     this.distributor.addResourceEndpoints(elem)
-    //   );
   };
 
   createWebite = (port: number) => {
