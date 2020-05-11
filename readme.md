@@ -6,7 +6,7 @@ still a work in progress, but was a fun learning experience
 chat server is a little test of websockets
 
 
-**from server folder**
+**How to run from server folder**
 
 npm install
 
