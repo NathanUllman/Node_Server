@@ -1,4 +1,5 @@
-import { NateServer } from "./server/server";
+import { NateServer } from "./webServer/webServer";
+
 // npx ts-node main.ts
 const srcFileLocation = "C:/Users/Nathan/Desktop/server/website/src";
 
