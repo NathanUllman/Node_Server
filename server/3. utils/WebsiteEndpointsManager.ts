@@ -6,6 +6,7 @@ import {
   FileContentResponse,
   ImageResponse,
   JsFunctionResponse,
+  EventStreamResponse,
 } from "../1. models/EndpointRespones";
 import {
   loadFileEndPoints,
@@ -13,6 +14,7 @@ import {
   keyWithExtension,
 } from "./LoadFileEndpoints";
 import { pathToFileURL } from "url";
+import { serverSideEvent } from "../../website/controllers/fancyController";
 
 export class EndPointsManager {
   htmlEndPoints: Map<string, string> = new Map();
@@ -53,6 +55,15 @@ export class EndPointsManager {
     method: string,
     headers: IncomingHttpHeaders
   ): IEndPointResponse {
+    if (headers.accept.includes("text/event-stream")) {
+      let functionName = url.split("/").pop();
+      let key = url.slice(0, url.length - functionName.length - 1); // remove the function name from url
+      return new EventStreamResponse(
+        this.controllerEndPoints[key],
+        functionName
+      );
+    }
+
     //Controller Requests
     if (url.indexOf("/controller/") === 0) {
       //  format: /controllers/....url..../functionName
@@ -66,7 +77,10 @@ export class EndPointsManager {
 
     if (method === "GET") {
       // Html
-      if (headers["sec-fetch-dest"] === "document") {
+      if (
+        headers["sec-fetch-dest"] === "document" ||
+        headers.accept.includes("text/html")
+      ) {
         // create new respose with file's location and response type
         return new FileContentResponse(this.htmlEndPoints[url], "text/html");
       }

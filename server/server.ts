@@ -1,4 +1,4 @@
-import { createServer, IncomingMessage, ServerResponse } from "http";
+import { createServer, IncomingMessage, ServerResponse, Server } from "http";
 import { EndPointsManager } from "./3. utils/WebsiteEndpointsManager";
 import { IEndPointResponse } from "./1. models/EndpointRespones";
 
@@ -6,6 +6,7 @@ import { IEndPointResponse } from "./1. models/EndpointRespones";
 
 export class NateServer {
   endPointsManager: EndPointsManager;
+  serv: Server;
 
   constructor(srcLocation: string) {
     this.endPointsManager = new EndPointsManager(srcLocation); // populate all endpoints
@@ -25,6 +26,27 @@ export class NateServer {
   onRequest = (req: IncomingMessage, res: ServerResponse) => {
     //this.logRequest(req);
 
+    if (req.headers.upgrade === "websocket") {
+      // const http = require("http");
+      // const WebSocketServer = require("websocket").server;
+      // const server = http.createServer();
+      // server.listen(9898);
+      // const wsServer = new WebSocketServer({
+      //   httpServer: server,
+      // });
+      // wsServer.on("request", function (request) {
+      //   const connection = request.accept(null, request.origin);
+      //   connection.on("message", function (message) {
+      //     console.log("Received Message:", message.utf8Data);
+      //     connection.sendUTF("Hi this is WebSocket server!");
+      //   });
+      //   connection.on("close", function (reasonCode, description) {
+      //     console.log("Client has disconnected.");
+      //   });
+      // });
+      // return;
+    }
+
     let response: IEndPointResponse = this.endPointsManager.getResponse(
       req.url === "/" ? "/index" : req.url, // empty url is default to index for some reason :P
       req.method,
@@ -35,6 +57,7 @@ export class NateServer {
   };
 
   createWebite = (port: number) => {
-    createServer(this.onRequest).listen(port); //the server object listens on port 8080
+    this.serv = createServer(this.onRequest);
+    this.serv.listen(port); //the server object listens on port 8080
   };
 }

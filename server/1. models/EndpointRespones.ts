@@ -24,6 +24,28 @@ export class ImageResponse implements IEndPointResponse {
   }
 }
 
+export class EventStreamResponse implements IEndPointResponse {
+  fileLocation: string;
+  functionName: string;
+  constructor(fileLocation: string, functionName: string) {
+    this.fileLocation = fileLocation;
+    this.functionName = functionName;
+  }
+
+  execute(res: ServerResponse) {
+    if (!this.fileLocation) NotFound(res);
+
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    });
+    // execute an exported function in fileLocation based on the function's name
+    let ya = require(this.fileLocation)[this.functionName];
+    ya(res);
+  }
+}
+
 export class JsFunctionResponse implements IEndPointResponse {
   fileLocation: string;
   functionName: string;
@@ -36,7 +58,8 @@ export class JsFunctionResponse implements IEndPointResponse {
     if (!this.fileLocation) NotFound(res);
 
     // execute an exported function in fileLocation based on the function's name
-    let functionResponse = require(this.fileLocation)[this.functionName](res);
+    let ya = require(this.fileLocation)[this.functionName];
+    let functionResponse = ya(res);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.write(functionResponse);
